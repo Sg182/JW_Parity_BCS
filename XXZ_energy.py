@@ -1,4 +1,5 @@
 from overlap import *
+from parameter import *
 import numpy as np
 from scipy.optimize import minimize
 import os
@@ -16,10 +17,10 @@ def Sz_sum(eta,Nsites):
     return Sz_global
 
 
-Nx=1
-Ny=8
-Nsites = Nx*Ny    # number of sites
-Delta = 0
+#--------------------------------------------------------------------------------------#
+'''This section loads the etas of the previous calculation as an initial guess for the current calculation.
+If the file doesn't exist, it creates a folder'''
+
 
 eta_file = 'eta_opt.txt'
 
@@ -29,7 +30,7 @@ if os.path.exists(eta_file):
 else:
     eta_initial = np.random.uniform(-1,1,Nsites)
 
-
+#---------------------------------------------------------------------------------------#
 
 
 # Define constraint dictionary

@@ -31,7 +31,7 @@ else:
     eta_initial = np.random.uniform(-1,1,Nsites)
 
 #---------------------------------------------------------------------------------------#
-
+#print(eta_initial)
 
 # Define constraint dictionary
 constraint = {'type': 'eq', 'fun': lambda eta :Sz_sum(eta,Nsites)}  #Using Lambda function since Sz_sum has two arguments
@@ -43,14 +43,14 @@ eta_optimized = result.x
 final_energy = result.fun
 
 print(f"The Energy for {Delta}:  {final_energy}")
-print(f"The global Sz is: {Sz_sum(eta_optimized,Nsites)}")
+#print(f"The global Sz is: {Sz_sum(eta_optimized,Nsites)}")
 
-with open(eta_file,'w') as file:
+with open(eta_file,'w') as file:     #overwriting the etas in the .txt file
     for eta in eta_optimized:
         file.write(f"{eta}\n")
 
-with open('energy_XXZ.txt',"a") as file:      # writing the energy to a text file
-    file.write(f"{Delta}   {final_energy}\n")
+'''with open('energy_XXZ_1D_12_JW_parity.txt',"a") as file:      # writing the energy to a text file
+    file.write(f"{Delta}   {final_energy:.12f}\n")'''
 
 
 

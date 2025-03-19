@@ -8,8 +8,8 @@ def bcs_overlap(theta,Nsites):   # computes overlap between two BCS states
 
 
 def S_x(theta,N,p):
-    cos_part_p = (np.cos(theta[p]))**2
-    sin_part_p = (np.sin(theta[p]))**2
+    cos_part_p = (np.cos(theta[p]))
+    sin_part_p = (np.sin(theta[p]))
     prefactor =  (1/2)*(2*cos_part_p*sin_part_p)
     prefactor_Sx = prefactor*bcs_overlap(theta,N)
     return prefactor_Sx

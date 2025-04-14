@@ -23,8 +23,8 @@ def S_zS_z(epsilon,eta,N,p,q):
     prefactor_SzS_z = prefactor*bcs_overlap(epsilon,eta,N)
     return prefactor_SzS_z
 
-def SzSxSz(epsilon,eta,N,p,i,q):
-    prefactor = (1/4)*((-1 + epsilon[p].conjugate()*eta[p])/(1 + epsilon[p].conjugate()*eta[p]))*\
+def SzSxSz(epsilon,eta,N,p,i,q):    #Three body term
+    prefactor = (1/8)*((-1 + epsilon[p].conjugate()*eta[p])/(1 + epsilon[p].conjugate()*eta[p]))*\
     ((epsilon[i].conjugate() + eta[i])/(1 + epsilon[i].conjugate()*eta[i]))*\
     ((-1 + epsilon[q].conjugate()*eta[q])/(1 + epsilon[q].conjugate()*eta[q]))
     prefactor_SzSxSz = prefactor*bcs_overlap(epsilon,eta,N)
@@ -38,7 +38,7 @@ def XXZ_1D_overlap(epsilon,eta,Nsites,Delta):  # function to calculate XXZ_Energ
         
 
         sum_Sx = (0.5)*S_x(epsilon,eta,Nsites,i)
-        sum_SzSxSz = SzSxSz(epsilon,eta,Nsites,p,i,q)
+        sum_SzSxSz = -2*SzSxSz(epsilon,eta,Nsites,p,i,q)
         sum_szSz = Delta*S_zS_z(epsilon,eta,Nsites,p,q)
         sum_energy = sum_energy + sum_Sx + sum_szSz + sum_SzSxSz
 

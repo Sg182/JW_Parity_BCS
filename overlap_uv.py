@@ -31,13 +31,16 @@ def S_zS_z(theta,p,q):
     return prefactor_SzS_z
 
 
-def SzSxSz(theta,N,p,i,q):    #Three body term
-    prefactor = (1/8)*(((-1*(np.cos(theta[p]))**(2) + (np.cos(theta[p]))**(2)))*\
-                       ((np.cos(theta[i])*np.sin(theta[i]))+(np.cos(theta[i])*np.sin(theta[i])))*\
-                        ((-1*(np.cos(theta[q]))**(2) + (np.cos(theta[q]))**(2))))/\
-                       ((((np.cos(theta[p]))**(2) + (np.sin(theta[p]))**(2)))*\
-                        (((np.cos(theta[i]))**(2) + (np.sin(theta[i]))**(2)))*\
-                        ((((np.cos(theta[i]))**(2) + (np.sin(theta[i]))**(2)))))
+def SzSxSz(theta,N,p,i,r):
+    cos_part_p = (np.cos(theta[p]))**2
+    sin_part_p = (np.sin(theta[p]))**2
+    cos_part_i = (np.cos(theta[i]))
+    sin_part_i = (np.sin(theta[i])) 
+    cos_part_r =  (np.cos(theta[r]))**2
+    sin_part_r = (np.sin(theta[r]))**2
+    numerator = (-cos_part_p + sin_part_p)*(2*cos_part_i*sin_part_i)*(-cos_part_r+sin_part_r)
+    denominator = (cos_part_p + sin_part_p)*(cos_part_i**2+sin_part_i**2)*(cos_part_r+sin_part_r)    #Three body term
+    prefactor =  (1/8)*(numerator/denominator)
     prefactor_SzSxSz = prefactor*bcs_overlap(theta,N)
     return prefactor_SzSxSz
 
@@ -50,8 +53,8 @@ def XXZ_1D_overlap(theta,Nsites,Delta):  # function to calculate XXZ_Energy in 1
 
         sum_Sx = (1/2)*S_x(theta,Nsites,i)
         sum_SzSxSz = -2*SzSxSz(theta,Nsites,p,i,q)
-        sum_SzSz = Delta*S_zS_z(theta,Nsites,p,q)
+        sum_SzSz = Delta*S_zS_z(theta,p,q)
         sum_energy = sum_energy + sum_Sx + sum_SzSz + sum_SzSxSz
-
+        #print("The each component are:", sum_Sx,sum_SzSxSz,sum_SzSz)
     return sum_energy
     

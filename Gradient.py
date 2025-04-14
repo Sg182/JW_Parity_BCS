@@ -8,6 +8,14 @@ def Grad_Sx(theta,i,p):
         gradient_Sx = 0
     return gradient_Sx
 
+
+def Grad_Sz(theta,i,p):
+    if i== p:
+        gradient_Sz = np.sin(2*theta[i])
+    else:
+        gradient_Sz = 0
+    return gradient_Sz
+
 def Grad_SzSz(theta,i,p,q):
 
     if i == p:
@@ -52,6 +60,18 @@ def Gradient_energy_XXZ_theta(theta,i,Nsites,Delta):  # calculates the gradient 
     return grad_SzSxSz+grad_SzSz+grad_Sx
 
 #---------------------------------------------------------------------------------------------------------------------#        
+
+def Total_Grad_Sz(theta,i,Nsites):
+    total_sz_grad = 0
+    
+    for j in range(Nsites):
+         total_sz_grad += Grad_Sz(theta,i,j)
+
+def Total_Gradient_Sz(theta,Nsites):
+    total_sz = []
+    for i in range(Nsites):
+        total_sz.append((Total_Grad_Sz(theta,i,Nsites)))
+    return np.array(total_sz)
 
 
 def Total_gradient_XXZ(theta,Nsites,Delta):

@@ -10,7 +10,7 @@ def bcs_overlap(theta,Nsites):   # computes overlap between two BCS states
 def S_x(theta,N,p):
     cos_part_p = (np.cos(theta[p]))
     sin_part_p = (np.sin(theta[p]))
-    prefactor =  (1/2)*(2*cos_part_p*sin_part_p)
+    prefactor =  (cos_part_p*sin_part_p)*np.cos(phi[p])
     prefactor_Sx = prefactor*bcs_overlap(theta,N)
     return prefactor_Sx
 def Sz(theta,Nsites,i):     # calculates Sz for site i
@@ -40,7 +40,8 @@ def SzSxSz(theta,N,p,i,r):
     sin_part_r = (np.sin(theta[r]))**2
     numerator = (-cos_part_p + sin_part_p)*(2*cos_part_i*sin_part_i)*(-cos_part_r+sin_part_r)
     denominator = (cos_part_p + sin_part_p)*(cos_part_i**2+sin_part_i**2)*(cos_part_r+sin_part_r)    #Three body term
-    prefactor =  (1/8)*(numerator/denominator)
+    prefactor =  (1/8)*(np.cos(2*theta[p]))*(np.sin(2*theta[i]))*(np.cos(2*theta[r]))*(np.cos(phi[i]))
+
     prefactor_SzSxSz = prefactor*bcs_overlap(theta,N)
     return prefactor_SzSxSz
 
@@ -84,6 +85,13 @@ import numpy as np'''
         prefactor_Sz = 0.5 * numerator / denominator
         return self.bcs_overlap() * prefactor_Sz
 
+    def S_x(self,i):
+    cos_part_p = (np.cos(self.theta[i]))
+    sin_part_p = (np.sin(self.theta[i]))
+    prefactor =  (cos_part_p*sin_part_p)*np.cos(self.phi[i])
+    prefactor_Sx = prefactor*bcs_overlap()
+    return prefactor_Sx
+
     def Splus_Sminus(self, p, q):
         return np.cos(self.theta[p]) * np.sin(self.theta[p]) * \
                np.cos(self.theta[q]) * np.sin(self.theta[q])*(np.exp(1j*(self.phi[q]-self.phi[p]) ))
@@ -94,6 +102,20 @@ import numpy as np'''
         numerator = (-cp + sp) * (-cq + sq)
         denominator = (cp + sp) * (cq + sq)
         return 0.25 * numerator / denominator
+
+    def SzSxSz(theta,N,p,i,r):
+    cos_part_p = (np.cos(theta[p]))**2
+    sin_part_p = (np.sin(theta[p]))**2
+    cos_part_i = (np.cos(theta[i]))
+    sin_part_i = (np.sin(theta[i])) 
+    cos_part_r =  (np.cos(theta[r]))**2
+    sin_part_r = (np.sin(theta[r]))**2
+    numerator = (-cos_part_p + sin_part_p)*(2*cos_part_i*sin_part_i)*(-cos_part_r+sin_part_r)
+    denominator = (cos_part_p + sin_part_p)*(cos_part_i**2+sin_part_i**2)*(cos_part_r+sin_part_r)    #Three body term
+    prefactor =  (1/8)*(np.cos(2*theta[p]))*(np.sin(2*theta[i]))*(np.cos(2*theta[r]))*(np.cos(phi[i]))
+
+    prefactor_SzSxSz = prefactor*bcs_overlap(theta,N)
+    return prefactor_SzSxSz
 
     def XXZ_overlap(self, Delta):   # add another argument 'periodic=True' and divide the body of the function with periodic/non periodic 
         sum_energy = 0

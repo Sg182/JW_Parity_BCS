@@ -95,83 +95,8 @@ print(f"The global Sz is: {Sz_sum(best_theta,Nsites)}")
 
 
 
-'''from neighbor import *
-import numpy as np
-# Only for Real u,v'''
-
-
-
+ 
  
  
 
-'''class BCSHamiltonian:
-    def __init__(self, theta,phi, Nx, Ny):
-        self.theta = theta
-        self.phi = phi
-        self.Nx = Nx
-        self.Ny = Ny
-        self.Nsites = Nx * Ny
-
-    def bcs_overlap(self):
-        overlap = 1
-        for k in range(self.Nsites):
-            overlap *= (np.cos(self.theta[k])**2 + np.sin(self.theta[k])**2)
-        return overlap
-
-    def Sz(self, i):
-     
-        cos_sq = np.cos(self.theta[i])**2
-        sin_sq = np.sin(self.theta[i])**2
-        numerator = -cos_sq + sin_sq
-        denominator = cos_sq + sin_sq
-        prefactor_Sz = 0.5 * numerator / denominator
-        return self.bcs_overlap() * prefactor_Sz
-
-    def Splus_Sminus(self, p, q):
-        return np.cos(self.theta[p]) * np.sin(self.theta[p]) * \
-               np.cos(self.theta[q]) * np.sin(self.theta[q])*(np.exp(1j*(self.phi[q]-self.phi[p]) ))
-
-    def S_zS_z(self, p, q):
-        cp, sp = np.cos(self.theta[p])**2, np.sin(self.theta[p])**2
-        cq, sq = np.cos(self.theta[q])**2, np.sin(self.theta[q])**2
-        numerator = (-cp + sp) * (-cq + sq)
-        denominator = (cp + sp) * (cq + sq)
-        return 0.25 * numerator / denominator
-
-    def XXZ_overlap(self, Delta):   # add another argument 'periodic=True' and divide the body of the function with periodic/non periodic 
-        sum_energy = 0
-        for i in range(1, self.Nsites + 1):
-            x, y = inverse_mapping(i, self.Ny)
-            neighbors = neighbor_square(x, y, self.Nx, self.Ny)
-            for j in neighbors:
-                if i >= j:
-                    continue
-                p, q = i - 1, j - 1
-                sum_energy += self.Splus_Sminus(p, q) + Delta * self.S_zS_z(p, q)
-        return sum_energy
-
-    def J1J2_2D_overlap(self, J):
-        total_overlap_J1 = 0
-        total_overlap_J2 = 0
-
-        # First nearest neighbors
-        for i in range(1, self.Nsites + 1):
-            x, y = inverse_mapping(i, self.Ny)
-            neighbors = neighbor_square(x, y, self.Nx, self.Ny)
-            for j in neighbors:
-                if i >= j:
-                    continue
-                p, q = i - 1, j - 1
-                total_overlap_J1 += self.Splus_Sminus(p, q) + self.S_zS_z(p, q)
-
-        # Second nearest neighbors
-        for i in range(1, self.Nsites + 1):
-            x, y = inverse_mapping(i, self.Ny)
-            neighbors = second_neighbor(x, y, self.Nx, self.Ny)
-            for j in neighbors:
-                if i >= j:
-                    continue
-                p, q = i - 1, j - 1
-                total_overlap_J2 += J * (self.Splus_Sminus(p, q) + self.S_zS_z(p, q))
-
-        return total_overlap_J1 + total_overlap_J2'''
+ 

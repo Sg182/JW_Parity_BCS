@@ -1,17 +1,22 @@
 #!/bin/zsh
 
-OUTFILE="energy_XXZ_1D_12_JW_parity.txt"
+OUTFILE="energy_XXZ_1D_12_JW_parity_OBC.txt"
 
-echo "Delta\t\tEnergy" > "$OUTFILE"
+# Create/overwrite with header 
+echo -e "Delta\tEnergy" > "$OUTFILE"
 
-# looping over Delta values
+# Sweep Delta from -1.0 to 1.5 in steps of 0.05
+for Delta in $(seq -1.0 0.05 1.5); do
+  echo "Running Delta = $Delta"
 
-for Delta in $(seq -2.0 0.05 2.0); do
-    #echo -e "Nx=$NX\nNy=$NY\nNsites=Nx*Ny\nDelta=$Delta" > parameter.py
-    echo "$Delta"
-    sed -i '' "s/^ *Delta *=.*/Delta=$Delta/" parameter.py  # * ensures if there is space in the parameter.py
-    python3 XXZ_energy.py
+  # Update Delta in parameter.py (handles optional leading spaces)
+  sed -i '' "s/^ *Delta *=.*/Delta = $Delta/" parameter.py
 
-done 
+  # Run and extract the energy from the specific line
+  ENERGY=$($(which python) Main.py | awk '/^The Energy for/ {print $NF; exit}')
 
-echo "Completed!"
+  # Append Delta and Energy to the outfile
+  echo -e "$Delta\t$ENERGY" >> "$OUTFILE"
+done
+
+echo "Completed! Results saved to $OUTFILE"

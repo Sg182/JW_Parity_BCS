@@ -69,6 +69,8 @@ def SzSxSz(theta,phi,N,p,i,r):
     prefactor_SzSxSz = prefactor*bcs_overlap(theta,N)
     return prefactor_SzSxSz
 
+
+
 '''def SzSxSz(theta, phi,N, p, q, r):
     return 0.25 * np.cos(2*theta[p]) * np.cos(theta[q]) * np.sin(theta[q]) * np.cos(phi[q]) * np.cos(2*theta[r])'''
 
@@ -76,13 +78,13 @@ def SzSxSz(theta,phi,N,p,i,r):
 
 
 
-def XXZ_1D_overlap(theta, phi, N, Delta):
+def XXZ_1D_overlap(theta, phi, N, Delta, periodic=True):
     E = 0.0
     # onsite term at all sites
     for i in range(N-1):
         E += 0.5*S_x(theta, phi,N, i)
 
-    if True:
+    if not periodic:
         for i in range(N-1):
             p = (i - 1)
             r = (i + 1)
@@ -92,6 +94,31 @@ def XXZ_1D_overlap(theta, phi, N, Delta):
             else:
                 E += -2.0 * SzSxSz(theta, phi,N, p, i, r)
                 E +=  Delta * S_zS_z(theta, p, r)
+
+    else:
+        for i in range(N-1):
+            p = (i - 1)
+            r = (i + 1)
+            if p == -1:
+                E += -S_xS_z(theta, phi, i, r)
+                E +=  0.5*Delta * Sz(theta,N, r)
+            else:
+                E += -2.0 * SzSxSz(theta, phi,N, p, i, r)
+                E +=  Delta * S_zS_z(theta, p, r)
+
+        #adding the extra PBC terms
+        X_1_X_M = (2**(-(N-1)))*np.prod(np.sin(2.0 * theta[:-1]) * np.cos(phi[:-1])) 
+        Z_1_Z_M = 2**(-3)*np.cos(2*theta[0])* np.cos(2*theta[-2]) * np.cos(2*theta[-1])
+
+        prod_X = np.prod(np.sin(2.0*theta[1:-2]) * np.cos(phi[1:-2])) if N > 3 else 1.0
+        Y1   = np.sin(2.0*theta[0]) * np.sin(phi[0])
+        YM1  = np.sin(2.0*theta[-2])* np.sin(phi[-2])  # site M-1
+        ZM   = np.cos(2.0*theta[-1]) 
+        Y_1_Y_M = 2**(-N)*prod_X*Y1*ZM*YM1
+
+        E += 2**(N-3)*X_1_X_M + 2*Z_1_Z_M + 2**(N-2)*Y_1_Y_M
+
+        
 
     return E
     

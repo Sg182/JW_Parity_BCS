@@ -54,3 +54,27 @@ def neighbor_square(x, y, Nx, Ny, periodic=True):
     return sites
 
 print(neighbor_square(2, 2, 5, 4))
+
+def second_nearest(x, y, Nx, Ny, periodic=False):
+
+    '''returns second-nearest points for 
+    a bipartitie lattice.'''
+    diag = []
+    def map_square(x, y, Nx, Ny):
+        assert 0 <= x < Nx, f"x={x} out of bounds"
+        assert 0 <= y < Ny, f"y={y} out of bounds"
+        return y * Nx + x
+
+    def wrap_x(u): return (u + Nx) % Nx if periodic else u
+    def wrap_y(v): return (v + Ny) % Ny if periodic else v
+
+    candidates = [(x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)]
+    for nx, ny in candidates:
+        if periodic:
+            diag.append(map_square(wrap_x(nx), wrap_y(ny), Nx, Ny))
+        else:
+            if 0 <= nx < Nx and 0 <= ny < Ny:
+                diag.append(map_square(nx, ny, Nx, Ny))
+    return diag
+
+print(second_nearest(0,0,5,4))

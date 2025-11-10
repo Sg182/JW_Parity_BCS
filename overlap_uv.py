@@ -14,6 +14,15 @@ def S_x(theta,phi,N,p):
     prefactor_Sx = prefactor#*bcs_overlap(theta,N)
     return 0.5*(np.sin(2*theta[p]))*np.cos(phi[p])
 
+def Sz(theta,N,j):
+    """
+    Safe Sz factor at site j in spin normalization.
+    If j < 0, return 1 (identity).
+    """
+    if j < 0:
+        return 1.0
+    return 0.5 * -np.cos(2*theta[j])
+
 def S_xS_x(theta,phi,p,q):
     return 0.25*(np.sin(2*theta[p]))*(np.sin(2*theta[q]))*(np.cos(phi[p]))*(np.cos(phi[q]))
 
@@ -35,8 +44,8 @@ def S_zS_zS_z(theta,phi,p,q,r):
     return 0.125*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))
 
 
-def Sz(theta,Nsites,i):     # calculates Sz for site i
-    prefactor_Sz = (1/2)*((-1*(np.cos(theta[i]))**(2) + (np.sin(theta[i]))**(2)))
+#def Sz(theta,Nsites,i):     # calculates Sz for site i
+ #   prefactor_Sz = (1/2)*((-1*(np.cos(theta[i]))**(2) + (np.sin(theta[i]))**(2)))
          
     return bcs_overlap(theta,Nsites)*prefactor_Sz
 
@@ -78,7 +87,7 @@ def SzSxSz(theta,phi,N,p,i,r):
 
 
 
-def XXZ_1D_overlap(theta, phi, N, Delta, periodic=True):
+def XXZ_1D_overlap(theta, phi, N, Delta, periodic=False):
     E = 0.0
     # onsite term at all sites
     for i in range(N-1):
@@ -121,12 +130,18 @@ def XXZ_1D_overlap(theta, phi, N, Delta, periodic=True):
         
 
     return E
+
+def XXZ_2D_overlap(theta,phi,N,Delta,periodic=False):
+    E = 0.0
+    #if not periodic:
+        
+
     
 def J1J2_1D_overlap(theta,phi,N,J2):
     E_J_1 = 0.0
     E_J_2 = 0.0
 
-    for i in range(N-1):
+    '''for i in range(N-1):
         E_J_1 += 0.5*S_x(theta, phi,N, i)
 
     if True:
@@ -135,10 +150,11 @@ def J1J2_1D_overlap(theta,phi,N,J2):
             r = (i + 1)
             if p == -1:
                 E_J_1 += -S_xS_z(theta, phi, i, r)
-                E_J_1 +=  0.5* Sz(theta,N, r)
+                E_J_1 +=  0.5* Sz(theta, r)
             else:
                 E_J_1 += -2.0 * SzSxSz(theta, phi,N, p, i, r)
-                E_J_1 +=  S_zS_z(theta, p, r)
+                E_J_1 +=  S_zS_z(theta, p, r)'''
+    E_J_1 = XXZ_1D_overlap(theta,phi,N,Delta=1,periodic=False)
 
     # For J2 part
 

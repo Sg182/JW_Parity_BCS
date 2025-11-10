@@ -6,13 +6,14 @@ from scipy.optimize import minimize
 import os
 import sys
 
+import warnings
+warnings.filterwarnings("ignore")
 
 
-
-def XXZ_1D_energy(var,Nsites,Delta):
+def J1J2_1D_energy(var,Nsites,Delta):
     theta = var[:Nsites]
     phi = var[Nsites:]
-    numerator = XXZ_1D_overlap(theta, phi, Nsites,Delta)
+    numerator = J1J2_1D_overlap(theta, phi, Nsites,Delta)
     denominator = bcs_overlap(theta, Nsites)
     return (numerator*denominator)  # function to calculate XXZ_Energy in 1D
     #return (XXZ_1D_overlap(theta,phi,Nsites,Delta,periodic=False)/bcs_overlap(theta,Nsites))
@@ -63,7 +64,7 @@ for i in range(100):
 # Perform minimization with Sz = 0 constraint
     #result = minimize(XXZ_1D_energy, theta0, args=(Nsites,Delta,), method='trust-constr',jac=Total_gradient_XXZ, constraints=constraint,\
                   #options={ 'maxiter':2000})
-    result = minimize(XXZ_1D_energy, var0, args=(Nsites,Delta,),method='BFGS',\
+    result = minimize(J1J2_1D_energy, var0, args=(Nsites,Delta,),method='BFGS',\
                   options={'xtol':1e-12,'maxiter':2000})
     #theta_optimized = result.x
     final_energy = result.fun
@@ -74,7 +75,11 @@ for i in range(100):
         best_theta = result.x[:Nsites]
         best_phi = result.x[Nsites:]
         best_var = np.concatenate([best_theta,best_phi])
+         
 
+U = np.cos(best_theta)
+V = np.sin(best_theta)
+ 
 #--------------------------------------------------------------------------------------------------------------------#
 
  
@@ -93,6 +98,8 @@ if result.success:
     print('optimization successful!')
 else:
     print("Warning! optimization failed: ", result.message)
+
+print("Eta = ",V/U)
  
 #print(bcs_overlap(theta_optimized,Nsites))
 print(f"The Energy for {Delta}:  {best_obj:.12f}")

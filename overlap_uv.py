@@ -159,7 +159,7 @@ def XXZ_2D_overlap(theta,phi,Nx,Ny,Delta,periodic=False):
             if i>= j:                      #HERE  only keeps i<j
                 continue
              
-            E+= 4*Delta*S_zS_zS_zS_z(theta,phi,p,q,r,s)
+            E+= 4*Delta*S_zS_zS_zS_z(theta,phi,N,p,q,r,s)
             E+= (2**(j-i-2))*psi_psi(theta,phi,N,i,j)
             E+= -4*(2**(j-i))*Y_pY_q(theta,phi,N,i,j)
     

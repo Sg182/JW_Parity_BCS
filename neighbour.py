@@ -155,5 +155,3 @@ def neighbors_2nd_square(x, y, Nx, Ny, periodic=False):
     return out
 
 
-print(second_nearest(1,0,5,4))
-print(neighbors_2nd(1,0,5,1))

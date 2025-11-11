@@ -20,7 +20,7 @@ def S_x(theta,phi,N,p):
 def Sz(theta,N,j):
     """
     Safe Sz factor at site j in spin normalization.
-    If j < 0, return 1 (identity).
+    If j < 0, return 0.5 (identity).
     """
     if j < 0:
         return 0.5
@@ -88,10 +88,10 @@ def SzSxSz(theta,phi,N,p,i,r):
 
 def psi_psi(theta,phi,N,p,q):   ##CAUTION! --> Here the function assumes p < q
     assert p <= q, f"psi_psi expects p <= q, got p={p}, q={q}"
-    L = q - p
+    #L = q - p
     if p == q:
         return 0.5
-    return float(np.prod([S_x(theta,phi,N,t) for t in range(p,q)]))*(0.5**L)
+    return float(np.prod([S_x(theta,phi,N,t) for t in range(p,q)])) 
 
 def Y_pY_q(theta,phi,N,p,q):
     r,s = p-1,q-1

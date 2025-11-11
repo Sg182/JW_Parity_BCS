@@ -155,13 +155,13 @@ def XXZ_2D_overlap(theta,phi,Nx,Ny,Delta,periodic=False):
         x,y = inverse_mapping(i,Nx)
         neighbors = neighbors_square_1st(x,y,Nx,Ny,periodic)
         for j in neighbors:
-            p,q,r,s = j-1,j,i-1,i
-            if i>= j:                      #HERE j<i
+            p,q,r,s = i-1,i,j-1,j
+            if i>= j:                      #HERE i<j
                 continue
              
             E+= 4*Delta*S_zS_zS_zS_z(theta,phi,p,q,r,s)
-            E+= (2**(i-j-2))*psi_psi(theta,phi,N,j,i)
-            E+= -4*(2**(i-j))*Y_pY_q(theta,phi,N,j,i)
+            E+= (2**(i-j-2))*psi_psi(theta,phi,N,i,j)
+            E+= -4*(2**(i-j))*Y_pY_q(theta,phi,N,i,j)
     
     return E
         

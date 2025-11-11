@@ -9,7 +9,7 @@ def inverse_mapping(i, Nx):
     return (x, y)
  
 
-def neighbor_square(x, y, Nx, Ny, periodic=True):
+'''def neighbor_square(x, y, Nx, Ny, periodic=True):
     sites = []
 
     # Map (x,y) → index i
@@ -51,9 +51,40 @@ def neighbor_square(x, y, Nx, Ny, periodic=True):
         if y - 1 >= 0:
             sites.append(map_square(x, y - 1, Nx,Ny))
 
-    return sites
+    return sites'''
 
-print(neighbor_square(2, 2, 5, 4))
+#print(neighbor_square(2, 2, 5, 4))
+
+def neighbors_square_1st(x, y, Nx, Ny, periodic=False):
+    # ---- Validate INPUT coordinates ----
+    assert 0 <= x < Nx, f"input x={x} out of bounds (Nx={Nx})"
+    assert 0 <= y < Ny, f"input y={y} out of bounds (Ny={Ny})"
+
+    nn = []
+
+    def map_square(x, y, Nx, Ny):
+        return y * Nx + x
+
+    def wrap_x(u): return (u + Nx) % Nx if periodic else u
+    def wrap_y(v): return (v + Ny) % Ny if periodic else v
+
+    # Horizontal neighbors
+    if Nx > 1:
+        for nx in (x+1, x-1):
+            if periodic or (0 <= nx < Nx):
+                nn.append(map_square(wrap_x(nx), y, Nx, Ny))
+
+    # Vertical neighbors
+    if Ny > 1:
+        for ny in (y-1, y+1):
+            if periodic or (0 <= ny < Ny):
+                nn.append(map_square(x, wrap_y(ny), Nx, Ny))
+
+    return nn
+
+print(neighbors_square_1st(0,2,5,4))
+
+
 
 def second_nearest(x, y, Nx, Ny, periodic=False):
 
@@ -77,4 +108,4 @@ def second_nearest(x, y, Nx, Ny, periodic=False):
                 diag.append(map_square(nx, ny, Nx, Ny))
     return diag
 
-print(second_nearest(0,0,5,4))
+#print(second_nearest(1,0,5,4))

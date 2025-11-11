@@ -55,8 +55,9 @@ def inverse_mapping(i, Nx):
 
 #print(neighbor_square(2, 2, 5, 4))
 
-def neighbors_square_1st(x, y, Nx, Ny, periodic=False):
+def neighbors_square_1st(x, y, Nx, Ny, periodic=True):
     # ---- Validate INPUT coordinates ----
+    '''For 1D set Nx or Ny to 1'''
     assert 0 <= x < Nx, f"input x={x} out of bounds (Nx={Nx})"
     assert 0 <= y < Ny, f"input y={y} out of bounds (Ny={Ny})"
 
@@ -82,7 +83,7 @@ def neighbors_square_1st(x, y, Nx, Ny, periodic=False):
 
     return nn
 
-print(neighbors_square_1st(0,2,5,4))
+print(neighbors_square_1st(0,1,5,2))
 
 
 
@@ -108,4 +109,51 @@ def second_nearest(x, y, Nx, Ny, periodic=False):
                 diag.append(map_square(nx, ny, Nx, Ny))
     return diag
 
-#print(second_nearest(1,0,5,4))
+
+def neighbors_2nd_square(x, y, Nx, Ny, periodic=False):
+    """
+    2D: diagonals (x±1, y±1).
+    1D (Ny==1): x±2 along x.
+    1D (Nx==1): y±2 along y.
+    FOR 1D, set Nx or Ny to 1
+    """
+    assert Nx >= 1 and Ny >= 1, f"Invalid lattice size Nx={Nx}, Ny={Ny}"
+    assert 0 <= x < Nx and 0 <= y < Ny, f"(x,y)=({x},{y}) out of bounds"
+    def map_square(x, y, Nx, Ny):
+        assert 0 <= x < Nx, f"x={x} out of bounds [0,{Nx-1}]"
+        assert 0 <= y < Ny, f"y={y} out of bounds [0,{Ny-1}]"
+        return y * Nx + x
+
+    out = []
+
+    def wrap_x(u): return (u + Nx) % Nx if periodic else u
+    def wrap_y(v): return (v + Ny) % Ny if periodic else v
+
+    if Nx > 1 and Ny > 1:
+        # 2D: diagonals
+        candidates = [(x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)]
+        for nx, ny in candidates:
+            if periodic:
+                out.append(map_square(wrap_x(nx), wrap_y(ny), Nx, Ny))
+            else:
+                if 0 <= nx < Nx and 0 <= ny < Ny:
+                    out.append(map_square(nx, ny, Nx, Ny))
+
+    elif Ny == 1 and Nx > 1:
+        # 1D along x: ±2
+        for nx in (x + 2, x - 2):
+            if periodic or (0 <= nx < Nx):
+                out.append(map_square(wrap_x(nx), 0, Nx, 1))
+
+    elif Nx == 1 and Ny > 1:
+        # 1D along y: ±2
+        for ny in (y + 2, y - 2):
+            if periodic or (0 <= ny < Ny):
+                out.append(map_square(0, wrap_y(ny), 1, Ny))
+
+    # Nx==Ny==1: single site, no neighbors
+    return out
+
+
+print(second_nearest(1,0,5,4))
+print(neighbors_2nd(1,0,5,1))

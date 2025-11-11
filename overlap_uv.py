@@ -1,4 +1,7 @@
+
 import numpy as np
+from neighbour import *
+
 def bcs_overlap(theta,Nsites):   # computes overlap between two BCS states
     overlap = 1
     
@@ -20,7 +23,7 @@ def Sz(theta,N,j):
     If j < 0, return 1 (identity).
     """
     if j < 0:
-        return 1.0
+        return 0.5
     return 0.5 * -np.cos(2*theta[j])
 
 def S_xS_x(theta,phi,p,q):
@@ -37,11 +40,15 @@ def S_yS_yS_z(theta,phi,p,q,r):
     Sz = -0.5*(np.cos(2*theta[r]))
     return SySy*Sz
 
-def S_zS_zS_zS_z(theta,phi,p,q,r,s):
-    return 0.0625*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))*(np.cos(2*theta[s]))
+#def S_zS_zS_zS_z(theta,phi,p,q,r,s):
+#   return 0.0625*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))*(np.cos(2*theta[s]))
+
+def S_zS_zS_zS_z(theta,phi,N,p,q,r,s):
+    return  Sz(theta,N,p)*Sz(theta,N,q)*Sz(theta,N,r)*Sz(theta,N,s)
+
 
 def S_zS_zS_z(theta,phi,p,q,r):
-    return 0.125*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))
+    return -0.125*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))
 
 
 #def Sz(theta,Nsites,i):     # calculates Sz for site i
@@ -79,6 +86,16 @@ def SzSxSz(theta,phi,N,p,i,r):
     return prefactor_SzSxSz
 
 
+def psi_psi(theta,phi,N,p,q):   ##CAUTION! --> Here the function assumes p < q
+    assert p <= q, f"psi_psi expects p <= q, got p={p}, q={q}"
+    L = q - p
+    if p == q:
+        return 0.5
+    return float(np.prod([S_x(theta,phi,N,t) for t in range(p,q)]))*(0.5**L)
+
+def Y_pY_q(theta,phi,N,p,q):
+    r,s = p-1,q-1
+    return psi_psi(theta,phi,N,p,q)*Sz(theta,N,p)*Sz(theta,N,r)*Sz(theta,N,q)*Sz(theta,N,s)
 
 '''def SzSxSz(theta, phi,N, p, q, r):
     return 0.25 * np.cos(2*theta[p]) * np.cos(theta[q]) * np.sin(theta[q]) * np.cos(phi[q]) * np.cos(2*theta[r])'''
@@ -131,9 +148,22 @@ def XXZ_1D_overlap(theta, phi, N, Delta, periodic=False):
 
     return E
 
-def XXZ_2D_overlap(theta,phi,N,Delta,periodic=False):
+def XXZ_2D_overlap(theta,phi,Nx,Ny,Delta,periodic=False):
     E = 0.0
-    #if not periodic:
+    N = Nx*Ny
+    for i in range(N):
+        x,y = inverse_mapping(i,Nx)
+        neighbors = neighbors_square_1st(x,y,Nx,Ny,periodic)
+        for j in neighbors:
+            p,q,r,s = j-1,j,i-1,i
+            if i>= j:                      #HERE j<i
+                continue
+             
+            E+= 4*Delta*S_zS_zS_zS_z(theta,phi,p,q,r,s)
+            E+= (2**(i-j-2))*psi_psi(theta,phi,N,j,i)
+            E+= -4*(2**(i-j))*Y_pY_q(theta,phi,N,j,i)
+    
+    return E
         
 
     

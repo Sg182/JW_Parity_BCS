@@ -156,12 +156,12 @@ def XXZ_2D_overlap(theta,phi,Nx,Ny,Delta,periodic=False):
         neighbors = neighbors_square_1st(x,y,Nx,Ny,periodic)
         for j in neighbors:
             p,q,r,s = i-1,i,j-1,j
-            if i>= j:                      #HERE i<j
+            if i>= j:                      #HERE  only keeps i<j
                 continue
              
             E+= 4*Delta*S_zS_zS_zS_z(theta,phi,p,q,r,s)
-            E+= (2**(i-j-2))*psi_psi(theta,phi,N,i,j)
-            E+= -4*(2**(i-j))*Y_pY_q(theta,phi,N,i,j)
+            E+= (2**(j-i-2))*psi_psi(theta,phi,N,i,j)
+            E+= -4*(2**(j-i))*Y_pY_q(theta,phi,N,i,j)
     
     return E
         

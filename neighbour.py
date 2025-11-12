@@ -1,6 +1,7 @@
 from parameter import *
 
-'''This script is based on index-0'''
+'''This script is based on index-0.
+SQUARE LATTICE FUNCTIONS ARE WELL TESTED.'''
 
 def inverse_mapping(i, Nx):
      
@@ -8,7 +9,7 @@ def inverse_mapping(i, Nx):
     y = (i) // Nx    
     return (x, y)
  
-
+ 
 '''def neighbor_square(x, y, Nx, Ny, periodic=True):
     sites = []
 
@@ -83,7 +84,7 @@ def neighbors_square_1st(x, y, Nx, Ny, periodic=True):
 
     return nn
 
-print(neighbors_square_1st(0,1,5,2))
+ 
 
 
 
@@ -153,5 +154,4 @@ def neighbors_2nd_square(x, y, Nx, Ny, periodic=False):
 
     # Nx==Ny==1: single site, no neighbors
     return out
-
 

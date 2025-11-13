@@ -60,8 +60,7 @@ def S_yS_yS_z(theta,phi,p,q,r):
     Sz = -0.5*(np.cos(2*theta[r]))
     return SySy*Sz
 
-#def S_zS_zS_zS_z(theta,phi,p,q,r,s):
-#   return 0.0625*(np.cos(2*theta[p]))*(np.cos(2*theta[q]))*(np.cos(2*theta[r]))*(np.cos(2*theta[s]))
+ 
 
 def S_zS_zS_zS_z(theta,phi,N,p,q,r,s):
     return Sz_string_expect(theta, p, q, r, s)
@@ -155,19 +154,19 @@ def XXZ_1D_overlap(theta, phi, N, Delta, periodic=False):
                 E +=  0.5*Delta * Sz(theta,N, r)
             else:
                 E += -2.0 * SzSxSz(theta, phi,N, p, i, r)
-                E +=  Delta * S_zS_z(theta, p, r)
+                E +=  Delta * S_zS_z(theta,N, p, r)
 
         #adding the extra PBC terms
-        X_1_X_M = (2**(-(N-1)))*np.prod(np.sin(2.0 * theta[:-1]) * np.cos(phi[:-1])) 
-        Z_1_Z_M = 2**(-3)*np.cos(2*theta[0])* np.cos(2*theta[-2]) * np.cos(2*theta[-1])
+        X_1_X_M = (0.5**((N-1)))*np.prod(np.sin(2.0 * theta[:-1]) * np.cos(phi[:-1])) 
+        Z_1_Z_M = -(0.5**(3))*np.cos(2*theta[0])* np.cos(2*theta[-2]) * np.cos(2*theta[-1])
 
         prod_X = np.prod(np.sin(2.0*theta[1:-2]) * np.cos(phi[1:-2])) if N > 3 else 1.0
         Y1   = np.sin(2.0*theta[0]) * np.sin(phi[0])
         YM1  = np.sin(2.0*theta[-2])* np.sin(phi[-2])  # site M-1
         ZM   = np.cos(2.0*theta[-1]) 
-        Y_1_Y_M = 2**(-N)*prod_X*Y1*ZM*YM1
+        Y_1_Y_M = 0.5**(N)*prod_X*Y1*ZM*YM1
 
-        E += 2**(N-3)*X_1_X_M + 2*Z_1_Z_M + 2**(N-2)*Y_1_Y_M
+        E += 2**(N-3)*X_1_X_M + 2*Z_1_Z_M*Delta + 2**(N-2)*Y_1_Y_M
 
         
 
@@ -235,7 +234,7 @@ def J1J2_1D_overlap(theta,phi,N,J2):
                 E_J_2 += 4*0.5*S_zS_zS_z(theta,phi,i,r,s)
             else:
                 E_J_2 += 4*S_zS_yS_yS_z(theta,phi,p,i,r,s)
-                E_J_2 += 4*S_zS_zS_zS_z(theta,phi,p,i,r,s)
+                E_J_2 += 4*S_zS_zS_zS_z(theta,phi,N,p,i,r,s)
 
     return E_J_1 + E_J_2*J2
 

@@ -160,13 +160,13 @@ def XXZ_1D_overlap(theta, phi, N, Delta, periodic=False):
         X_1_X_M = (0.5**((N-1)))*np.prod(np.sin(2.0 * theta[:-1]) * np.cos(phi[:-1])) 
         Z_1_Z_M = -(0.5**(3))*np.cos(2*theta[0])* np.cos(2*theta[-2]) * np.cos(2*theta[-1])
 
-        prod_X = np.prod(np.sin(2.0*theta[1:-2]) * np.cos(phi[1:-2])) if N > 3 else 1.0
+        prod_X = np.prod(np.sin(2.0*theta[:-1]) * np.cos(phi[:-1])) if N > 3 else 1.0
         Y1   = np.sin(2.0*theta[0]) * np.sin(phi[0])
         YM1  = np.sin(2.0*theta[-2])* np.sin(phi[-2])  # site M-1
-        ZM   = np.cos(2.0*theta[-1]) 
-        Y_1_Y_M = 0.5**(N)*prod_X*Y1*ZM*YM1
+        Z1Z_M_ZM   = -np.cos(2.0*theta[0])*np.cos(2.0*theta[-1])*np.cos(2.0*theta[-2]) 
+        Y_1_Y_M = 0.5**(N+2)*prod_X*Z1Z_M_ZM
 
-        E += 2**(N-3)*X_1_X_M + 2*Z_1_Z_M*Delta + 2**(N-2)*Y_1_Y_M
+        E += 2**(N-3)*X_1_X_M + 2*Z_1_Z_M*Delta - 2**(N)*Y_1_Y_M
 
         
 
@@ -237,6 +237,34 @@ def J1J2_1D_overlap(theta,phi,N,J2):
                 E_J_2 += 4*S_zS_zS_zS_z(theta,phi,N,p,i,r,s)
 
     return E_J_1 + E_J_2*J2
+
+def J1J2_2D_overlap(theta,phi,Nx,Ny,J2,Periodic):
+    '''ONE IMPORTANT POINT : Sz_pSz_p = 1/4 (AS WE KNOW PAULIS X^2 = I)
+    SO, IN 2D, BE CAREFUL!!! FOR EXPECTATION VALUE DON'T DO <Sz_p><Sz_p> SINCE
+    IT IS NOT 1/4!!!! 
+    TO ALLEVIATE THE PROBLEM, I DEFINED "Sz_string_expect" FUNCTION'''
+    E_J_1 = 0.0
+    E_J_2 = 0.0
+
+    N = Nx*Ny
+
+    E_J_1 = XXZ_2D_overlap(theta,phi,Nx,Ny,Delta=1,periodic=Periodic)
+    for i in range(N):
+        x,y = inverse_mapping(i,Nx)
+        neighbors = neighbors_2nd_square(x,y,Nx,Ny,periodic=Periodic)
+        for j in neighbors:
+            #p,q,r,s = i-1,i,j-1,j
+            if i>= j:                      #HERE  only keeps i<j
+                continue
+            p,q,r,s = i-1,i,j-1,j 
+            E_J_2+= 4.0*S_zS_zS_zS_z(theta,phi,N,p,q,r,s)
+             
+            E_J_2+= -4.0*(2.0**(j-i))*Y_pY_q(theta,phi,N,i,j)
+            E_J_2+= (2.0**(j-i-2))*psi_psi(theta,phi,N,i,j)
+             
+    
+    return E_J_1 + J2*E_J_2
+
 
 
     
